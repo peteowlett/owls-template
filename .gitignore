@@ -1,0 +1,9 @@
+credentials.env
+.python-version
+notebooks/Pipfile
+notebooks/Pipefile.lock
+.ipynb_checkpoints/
+.pytest_cache/
+__pycache__/
+data/ml-latest-small/
+*.pyc

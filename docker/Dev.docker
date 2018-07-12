@@ -1,0 +1,24 @@
+FROM ubuntu:17.10
+
+# -- Install Pipenv:
+RUN apt-get update \
+  && apt-get install software-properties-common python-software-properties -y \
+  && add-apt-repository ppa:pypa/ppa -y \
+  && apt-get update \
+  && apt-get install bash \
+  && apt-get install git pipenv -y
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+# -- Install Application into container:
+RUN set -ex && mkdir /app
+
+WORKDIR /app
+
+# -- Adding Pipfiles
+COPY Pipfile Pipfile
+COPY Pipfile.lock Pipfile.lock
+
+# -- Install dependencies:
+RUN pipenv install --dev
