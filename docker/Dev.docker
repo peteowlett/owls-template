@@ -18,7 +18,6 @@ WORKDIR /app
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
 
 # -- Install dependencies:
 RUN pipenv install --dev
