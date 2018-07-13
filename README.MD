@@ -42,20 +42,71 @@ To launch a notebook server for local work, run `make note`. The `src/`, `data/`
 `notebooks/`, `web/` and `bin/` directories will all be mounted locally at `/app/`.
 
 
-## Links
+## Running on Kubernetes
 
-Data sets
+To run on kubernetes locally we'll need to install:
+- Kubectl - A command line app for interacting with kubernete
+- VirtualBox - A VM host to run a local kubernetes cluster
+- Minikube - A command line app for installing and running a local kubernetes
+cluster inside of VirtualBox
+- Kompose - A command line tool for launching our docker-compose.yaml file
+as a kubernetes service
 
-- https://machinelearningmastery.com/time-series-datasets-for-machine-learning/
-- https://archive.ics.uci.edu/ml/datasets.html?format=&task=&att=&area=&numAtt=&numIns=&type=ts&sort=nameUp&view=table
+Manually install VirtualBox (yuk!) from here first:
+https://www.virtualbox.org/wiki/Downloads
 
-LSTM Approach
+Then install the command line apps:
 
-- https://www.kaggle.com/niyamatalmass/machine-learning-for-time-series-analysis
-- https://blog.statsbot.co/time-series-prediction-using-recurrent-neural-networks-lstms-807fa6ca7f
-- https://towardsdatascience.com/using-lstms-to-forecast-time-series-4ab688386b1f
+```
+brew install kubernetes-cli
+brew cask install minikube
+brew install kompose
+```
 
-PyMC Approach
+You may need a free account on Docker Hub ... you can get it here:
+https://hub.docker.com/
 
-- https://docs.pymc.io/notebooks/GLM-poisson-regression.html
+If running on Mac you'll need to change a setting in your local docker install. Open
+Docker > Preferences, untick the "Securely store Docker logins in macOS keychain"
+then restart docker. This is because Kompose does not support macOS keychain yet!
 
+Now we're ready to rock.
+
+```
+# Start the local kubernetes cluster
+minikube start
+
+# See what services as running (should be none)
+kubectl get pods
+
+# Launch the dashboard
+minikube dashboard
+
+# Build and launch our services
+kompose up
+
+# Open our Jupyter web service - this should open a browser to the login page
+minikube service dev
+
+# List the post again to get the service hash
+kubectl get pods
+
+# Tail the jupyter service logs to get the login token - replace the token with
+#  whatever it's called on your machine (from last step)
+kubectl --namespace default logs dev-69498c9986-b8n5x
+```
+
+You should now be able to log into the jupyter service running on Kubernetes!
+
+To bring it back down again do:
+
+```
+# Stop and delete the services we launched
+kompose down
+
+# Spin down the minikube cluster
+minikube stop
+
+# OPTIONAL - Delete the local minikube VM
+minikube delete
+```

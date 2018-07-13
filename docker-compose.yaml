@@ -6,8 +6,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dev.docker
+    image: peteowlett/owls-template_dev
     ports:
      - "8888:8888"
+    labels:
+      kompose.service.type: LoadBalancer
     command: pipenv run jupyter notebook --notebook-dir=/app/notebooks --ip='*' --allow-root --no-browser
     volumes:
       - ./bin:/app/bin
@@ -21,6 +24,7 @@ services:
     build:
       context: .
       dockerfile: docker/Web.docker
+    image: peteowlett/owls-template_web
     env_file: credentials.env
     ports:
       - "5000:5000"
